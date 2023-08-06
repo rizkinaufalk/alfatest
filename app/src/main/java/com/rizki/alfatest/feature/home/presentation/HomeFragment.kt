@@ -11,22 +11,24 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.rizki.alfatest.MovieApp
+import com.rizki.alfatest.R
 import com.rizki.alfatest.common.Constants
 import com.rizki.alfatest.common.GlideApp
 import com.rizki.alfatest.common.GlobalFunc
 import com.rizki.alfatest.common.Resource
+import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.data.remote.dto.toResult
+import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.model.Genres
 import com.rizki.alfatest.domain.model.Movies
+import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import com.rizki.alfatest.feature.home.adapter.MovieAdapter
 import com.rizki.alfatest.feature.review.presentation.ReviewFragment
-import com.rizki.alfatest.R
-import com.rizki.alfatest.data.local.entity.FavouriteEntity
-import com.rizki.alfatest.databinding.FragmentHomeBinding
-import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -39,7 +41,7 @@ class HomeFragment : Fragment() {
     var page = 1
     var genre = ""
     var isGenre = false
-//    var isFav = true
+    var youtubeKey : String? = null
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var movies: Movies
@@ -104,6 +106,24 @@ class HomeFragment : Fragment() {
                     adapterMovie.setList(movieList)
 
 
+                }
+
+                is Resource.Error -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                }
+            }
+
+        }
+
+        viewModel.getVideoByMovieIdResult.observe(viewLifecycleOwner) {
+            when (it) {
+
+                is Resource.Loading -> {
+                    // TODO: Display progressBar
+                }
+
+                is Resource.Success -> {
+                    youtubeKey = it.data?.get(0)?.key
                 }
 
                 is Resource.Error -> {
@@ -228,6 +248,7 @@ class HomeFragment : Fragment() {
 //                setFragmentResult("requestKey", bundleOf("movieId" to item.id))
 
                 viewModel.getFavById(data.id)
+                viewModel.getVideoByMovieId(data.id)
 
                 movies = Movies(
                     false,
@@ -259,6 +280,7 @@ class HomeFragment : Fragment() {
         val tvOverview = dialog.findViewById<TextView>(R.id.tv_overview)
         val btnReview = dialog.findViewById<Button>(R.id.btn_review)
         val ivFavourite = dialog.findViewById<ImageView>(R.id.iv_favourite)
+        val youtubeView: YouTubePlayerView? = dialog.findViewById<YouTubePlayerView>(R.id.youtube_player)
 
         GlideApp.with(MovieApp.applicationContext()).load("${MovieApi.IMAGE_URL}${posterPath}")
             .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(ivPoster!!)

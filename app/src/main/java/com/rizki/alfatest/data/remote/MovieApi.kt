@@ -3,6 +3,7 @@ package com.rizki.alfatest.data.remote
 import com.rizki.alfatest.data.remote.dto.GenreDto
 import com.rizki.alfatest.data.remote.dto.MovieDto
 import com.rizki.alfatest.data.remote.dto.ReviewDto
+import com.rizki.alfatest.data.remote.dto.VideoDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -27,6 +28,11 @@ interface MovieApi {
     suspend fun getMovieReviews(
         @Path("id") movieId: Int
     ): ReviewDto
+
+    @GET("movie/{movie_id}/videos?api_key=$API_KEY")
+    suspend fun getVideo(
+        @Path("movie_id") movieId: Int
+    ): VideoDto
 
     companion object{
         const val BASE_URL = "https://api.themoviedb.org/3/"

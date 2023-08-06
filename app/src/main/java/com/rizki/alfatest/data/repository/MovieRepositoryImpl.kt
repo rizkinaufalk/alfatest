@@ -6,6 +6,7 @@ import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.MovieDto
 import com.rizki.alfatest.data.remote.dto.ReviewsDto
+import com.rizki.alfatest.data.remote.dto.VideosDto
 import com.rizki.alfatest.domain.repository.MovieRepository
 import javax.inject.Inject
 
@@ -27,5 +28,9 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getReviews(movieId: Int): List<ReviewsDto> {
         return api.getMovieReviews(movieId).results
+    }
+
+    override suspend fun getVideos(movieId: Int): List<VideosDto> {
+        return api.getVideo(movieId).results
     }
 }
