@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.rizki.alfatest.MovieApp
 import com.rizki.alfatest.R
@@ -115,24 +117,6 @@ class HomeFragment : Fragment() {
 
         }
 
-        viewModel.getVideoByMovieIdResult.observe(viewLifecycleOwner) {
-            when (it) {
-
-                is Resource.Loading -> {
-                    // TODO: Display progressBar
-                }
-
-                is Resource.Success -> {
-                    youtubeKey = it.data?.get(0)?.key
-                }
-
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                }
-            }
-
-        }
-
         viewModel.getGenreResult.observe(viewLifecycleOwner) {
             when (it) {
 
@@ -163,7 +147,8 @@ class HomeFragment : Fragment() {
                         movies.original_title,
                         movies.release_date,
                         movies.overview,
-                        true
+                        true,
+                        youtubeKey
                     )
                 }
 
@@ -174,10 +159,31 @@ class HomeFragment : Fragment() {
                         movies.original_title,
                         movies.release_date,
                         movies.overview,
-                        false
+                        false,
+                        youtubeKey
                     )
                 }
             }
+        }
+
+        viewModel.getVideoByMovieIdResult.observe(viewLifecycleOwner) {
+            when (it) {
+
+                is Resource.Loading -> {
+                    // TODO: Display progressBar
+                }
+
+                is Resource.Success -> {
+                    youtubeKey = it.data?.get(0)?.key
+                    viewModel.getFavById(movies.id)
+                }
+
+                is Resource.Error -> {
+                    viewModel.getFavById(movies.id)
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                }
+            }
+
         }
     }
 
@@ -247,7 +253,6 @@ class HomeFragment : Fragment() {
             override fun onItemClicked(data: Movies) {
 //                setFragmentResult("requestKey", bundleOf("movieId" to item.id))
 
-                viewModel.getFavById(data.id)
                 viewModel.getVideoByMovieId(data.id)
 
                 movies = Movies(
@@ -268,7 +273,8 @@ class HomeFragment : Fragment() {
         title: String,
         releaseDate: String,
         overview: String,
-        isFav: Boolean
+        isFav: Boolean,
+        youtubeKeys: String? = null
     ) {
         val dialog = BottomSheetDialog(this.requireContext())
         dialog.setContentView(R.layout.dialog_bottom_sheet_detail)
@@ -280,7 +286,18 @@ class HomeFragment : Fragment() {
         val tvOverview = dialog.findViewById<TextView>(R.id.tv_overview)
         val btnReview = dialog.findViewById<Button>(R.id.btn_review)
         val ivFavourite = dialog.findViewById<ImageView>(R.id.iv_favourite)
-        val youtubeView: YouTubePlayerView? = dialog.findViewById<YouTubePlayerView>(R.id.youtube_player)
+        val youtubeView = dialog.findViewById<YouTubePlayerView>(R.id.youtube_player)
+
+        if (youtubeView != null) {
+            lifecycle.addObserver(youtubeView)
+        }
+        youtubeView?.addYouTubePlayerListener(object: AbstractYouTubePlayerListener() {
+
+
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                youtubeKeys?.let { youTubePlayer.cueVideo(it, 0f) }
+            }
+        })
 
         GlideApp.with(MovieApp.applicationContext()).load("${MovieApi.IMAGE_URL}${posterPath}")
             .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(ivPoster!!)
