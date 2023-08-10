@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
+import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.domain.model.Genres
 import com.rizki.alfatest.domain.model.Movie
 import com.rizki.alfatest.domain.model.YoutubeVideo
@@ -32,7 +33,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val getMovieResult = MutableLiveData<Resource<Movie>>()
-    val getGenreResult = MutableLiveData<Resource<List<Genres>>>()
+    val getGenreResult = MutableLiveData<Resource<List<GenresDto>>>()
     val getMovieByGenreResult = MutableLiveData<Resource<Movie>>()
     val getFavByIdResult = MutableLiveData<Resource<FavouriteEntity?>>()
     val getVideoByMovieIdResult = MutableLiveData<Resource<List<YoutubeVideo>>>()

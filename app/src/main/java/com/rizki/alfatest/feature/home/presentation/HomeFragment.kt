@@ -22,6 +22,7 @@ import com.rizki.alfatest.common.GlobalFunc
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
+import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.model.Genres
@@ -87,7 +88,7 @@ class HomeFragment : Fragment() {
                 }
 
                 is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -111,7 +112,7 @@ class HomeFragment : Fragment() {
                 }
 
                 is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -125,14 +126,14 @@ class HomeFragment : Fragment() {
                 }
 
                 is Resource.Success -> {
-                    val genreList = ArrayList<Genres>()
-                    genreList.add(Genres("Genre", 0))
+                    val genreList = ArrayList<GenresDto>()
+                    genreList.add(GenresDto(0,"Genre"))
                     it.data?.map { genreList.add(it) }
                     showGenreList(genreList)
                 }
 
                 is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -180,7 +181,7 @@ class HomeFragment : Fragment() {
 
                 is Resource.Error -> {
                     viewModel.getFavById(movies.id)
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -337,7 +338,7 @@ class HomeFragment : Fragment() {
         dialog.show()
     }
 
-    private fun showGenreList(genres: ArrayList<Genres>) {
+    private fun showGenreList(genres: ArrayList<GenresDto>) {
         val genreSpinner: Spinner = binding.spGenre
         genreSpinner.onItemSelectedListener
         val spMovieAdapter =

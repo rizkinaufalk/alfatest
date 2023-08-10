@@ -7,9 +7,9 @@ data class GenresDto(
     val name: String
 )
 
-fun GenresDto.toGenre(): Genres{
-    return Genres(
-        id = id,
-        name = name
-    )
-}
+//fun GenresDto.toGenre(): Genres{
+//    return Genres(
+//        id = id,
+//        name = name
+//    )
+//}
