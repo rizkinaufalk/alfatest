@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.dto.GenresDto
-import com.rizki.alfatest.domain.model.Genres
-import com.rizki.alfatest.domain.model.Movie
-import com.rizki.alfatest.domain.model.YoutubeVideo
+import com.rizki.alfatest.domain.mapper.Movie
+import com.rizki.alfatest.domain.mapper.YoutubeVideo
 import com.rizki.alfatest.domain.usecase.favourite.AddFavouriteUseCase
 import com.rizki.alfatest.domain.usecase.favourite.DeleteFavUseCase
 import com.rizki.alfatest.domain.usecase.favourite.GetFavByIdUseCase
@@ -17,7 +16,6 @@ import com.rizki.alfatest.domain.usecase.movie.get_genre.GetMovieByGenreUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_popular.GetPopularUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_video.GetVideoByMovieIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

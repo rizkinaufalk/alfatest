@@ -25,8 +25,7 @@ import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
-import com.rizki.alfatest.domain.model.Genres
-import com.rizki.alfatest.domain.model.Movies
+import com.rizki.alfatest.domain.mapper.Movies
 import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import com.rizki.alfatest.feature.home.adapter.MovieAdapter
 import com.rizki.alfatest.feature.review.presentation.ReviewFragment

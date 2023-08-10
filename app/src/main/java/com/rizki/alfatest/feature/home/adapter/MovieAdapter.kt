@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.Target
 import com.rizki.alfatest.common.GlideApp
 import com.rizki.alfatest.data.remote.MovieApi
-import com.rizki.alfatest.domain.model.Movies
+import com.rizki.alfatest.domain.mapper.Movies
 import com.rizki.alfatest.databinding.ItemMovieBinding
 
 class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {

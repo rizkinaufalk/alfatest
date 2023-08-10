@@ -1,6 +1,6 @@
 package com.rizki.alfatest.data.remote.dto
 
-import com.rizki.alfatest.domain.model.YoutubeVideo
+import com.rizki.alfatest.domain.mapper.YoutubeVideo
 
 data class VideosDto(
     val id: String,
@@ -17,6 +17,7 @@ data class VideosDto(
 
 fun VideosDto.toYoutubeVideo(): YoutubeVideo{
     return YoutubeVideo(
-        key = key
+        key = key,
+        type = type
     )
 }

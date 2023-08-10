@@ -7,7 +7,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.rizki.alfatest.common.GlideApp
 import com.rizki.alfatest.data.remote.MovieApi
-import com.rizki.alfatest.domain.model.Reviews
+import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.databinding.ItemReviewBinding
 
 class ReviewAdapter: RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {

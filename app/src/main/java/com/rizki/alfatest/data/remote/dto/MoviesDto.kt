@@ -1,6 +1,6 @@
 package com.rizki.alfatest.data.remote.dto
 
-import com.rizki.alfatest.domain.model.Movies
+import com.rizki.alfatest.domain.mapper.Movies
 
 data class MoviesDto(
     val adult: Boolean,

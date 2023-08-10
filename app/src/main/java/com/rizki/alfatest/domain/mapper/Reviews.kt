@@ -1,4 +1,4 @@
-package com.rizki.alfatest.domain.model
+package com.rizki.alfatest.domain.mapper
 
 data class Reviews(
     val content: String,

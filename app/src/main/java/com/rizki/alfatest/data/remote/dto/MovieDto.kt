@@ -1,6 +1,6 @@
 package com.rizki.alfatest.data.remote.dto
 
-import com.rizki.alfatest.domain.model.Movie
+import com.rizki.alfatest.domain.mapper.Movie
 
 data class MovieDto(
     val page: Int,

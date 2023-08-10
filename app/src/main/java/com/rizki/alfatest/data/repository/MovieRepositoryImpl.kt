@@ -1,12 +1,8 @@
 package com.rizki.alfatest.data.repository
 
-import com.rizki.alfatest.data.local.FavouriteDao
-import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
-import com.rizki.alfatest.data.remote.dto.GenresDto
-import com.rizki.alfatest.data.remote.dto.MovieDto
-import com.rizki.alfatest.data.remote.dto.ReviewsDto
-import com.rizki.alfatest.data.remote.dto.VideosDto
+import com.rizki.alfatest.data.remote.dto.*
+import com.rizki.alfatest.domain.mapper.YoutubeVideo
 import com.rizki.alfatest.domain.repository.MovieRepository
 import javax.inject.Inject
 
@@ -30,7 +26,14 @@ class MovieRepositoryImpl @Inject constructor(
         return api.getMovieReviews(movieId).results
     }
 
-    override suspend fun getVideos(movieId: Int): List<VideosDto> {
-        return api.getVideo(movieId).results
+    // In this case i want to filter only youtube videos because the api provide any other type which not only youtube
+    override suspend fun getVideos(movieId: Int): List<YoutubeVideo> {
+        // filter the result from api with the desired type after that pass it to wrapper with map
+        val item = api.getVideo(movieId).results.filter {
+            it.type == "Youtube"
+        }.map {
+            it.toYoutubeVideo()
+        }
+        return item
     }
 }

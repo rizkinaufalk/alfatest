@@ -1,6 +1,5 @@
 package com.rizki.alfatest.feature.favourite.presentation
 
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,9 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.databinding.FragmentFavouriteBinding
-import com.rizki.alfatest.domain.model.Movies
 import com.rizki.alfatest.feature.favourite.adapter.FavouriteAdapter
-import com.rizki.alfatest.feature.home.adapter.MovieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

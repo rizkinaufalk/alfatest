@@ -1,6 +1,6 @@
 package com.rizki.alfatest.data.remote.dto
 
-import com.rizki.alfatest.domain.model.Reviews
+import com.rizki.alfatest.domain.mapper.Reviews
 
 data class ReviewsDto(
     val author: String,

@@ -1,8 +1,7 @@
 package com.rizki.alfatest.domain.usecase.movie.get_video
 
 import com.rizki.alfatest.common.Resource
-import com.rizki.alfatest.data.remote.dto.toYoutubeVideo
-import com.rizki.alfatest.domain.model.YoutubeVideo
+import com.rizki.alfatest.domain.mapper.YoutubeVideo
 import com.rizki.alfatest.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,8 +16,7 @@ class GetVideoByMovieIdUseCase @Inject constructor(
     operator fun invoke(movieId: Int): Flow<Resource<List<YoutubeVideo>>> = flow {
         try {
             emit(Resource.Loading<List<YoutubeVideo>>())
-            val youtube = repository.getVideos(movieId).map {
-                it.toYoutubeVideo()}
+            val youtube = repository.getVideos(movieId)
             emit(Resource.Success<List<YoutubeVideo>>(youtube))
         } catch(e: HttpException) {
             emit(Resource.Error<List<YoutubeVideo>>(e.localizedMessage ?: "An unexpected error occured"))

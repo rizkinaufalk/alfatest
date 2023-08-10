@@ -2,7 +2,7 @@ package com.rizki.alfatest.domain.usecase.movie.get_review
 
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.remote.dto.toReviews
-import com.rizki.alfatest.domain.model.Reviews
+import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

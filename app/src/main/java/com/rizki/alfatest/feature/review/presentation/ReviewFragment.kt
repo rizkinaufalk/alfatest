@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rizki.alfatest.common.Resource
-import com.rizki.alfatest.domain.model.Reviews
+import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.feature.review.adapter.ReviewAdapter
 import com.rizki.alfatest.databinding.FragmentReviewBinding
 import dagger.hilt.android.AndroidEntryPoint
