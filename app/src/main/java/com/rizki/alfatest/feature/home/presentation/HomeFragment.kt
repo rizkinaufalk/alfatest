@@ -16,10 +16,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.rizki.alfatest.MovieApp
 import com.rizki.alfatest.R
-import com.rizki.alfatest.common.Constants
-import com.rizki.alfatest.common.GlideApp
-import com.rizki.alfatest.common.GlobalFunc
-import com.rizki.alfatest.common.Resource
+import com.rizki.alfatest.common.*
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.data.remote.dto.GenresDto
@@ -33,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -45,7 +42,7 @@ class HomeFragment : Fragment() {
     var isGenre = false
     var youtubeKey : String? = null
 
-    private lateinit var binding: FragmentHomeBinding
+    private var binding: FragmentHomeBinding by autoCleaned {(FragmentHomeBinding.inflate(layoutInflater))}
     private lateinit var movies: Movies
 
     private val viewModel: HomeViewModel by viewModels()
@@ -66,6 +63,7 @@ class HomeFragment : Fragment() {
         initComponent()
         initData()
         observeData()
+        initAdapter()
     }
 
     private fun observeData() {
@@ -195,7 +193,6 @@ class HomeFragment : Fragment() {
 
     private fun initComponent() {
         isGenre = false
-        initAdapter()
 
         binding.apply {
 
@@ -249,22 +246,7 @@ class HomeFragment : Fragment() {
 
         }
 
-        adapterMovie.setOnItemClickCallback(object : MovieAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Movies) {
-//                setFragmentResult("requestKey", bundleOf("movieId" to item.id))
-
-                viewModel.getVideoByMovieId(data.id)
-
-                movies = Movies(
-                    false,
-                    data.id,
-                    data.original_title,
-                    data.overview,
-                    data.poster_path,
-                    data.release_date
-                )
-            }
-        })
+        adapterMovie.setOnItemClickCallback(this)
     }
 
     private fun showMovieDetail(
@@ -292,8 +274,6 @@ class HomeFragment : Fragment() {
             lifecycle.addObserver(youtubeView)
         }
         youtubeView?.addYouTubePlayerListener(object: AbstractYouTubePlayerListener() {
-
-
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 youtubeKeys?.let { youTubePlayer.cueVideo(it, 0f) }
             }
@@ -376,6 +356,19 @@ class HomeFragment : Fragment() {
 
         }
 
+    }
+
+    override fun onItemClicked(data: Movies) {
+        viewModel.getVideoByMovieId(data.id)
+
+        movies = Movies(
+            false,
+            data.id,
+            data.original_title,
+            data.overview,
+            data.poster_path,
+            data.release_date
+        )
     }
 
 }

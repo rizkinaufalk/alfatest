@@ -7,4 +7,8 @@ data class Movies(
     val overview: String,
     val poster_path: String,
     val release_date: String,
-)
+) {
+    fun clear(){
+        Movies(false, 0,"","","","")
+    }
+}

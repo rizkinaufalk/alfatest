@@ -18,6 +18,7 @@ data class VideosDto(
 fun VideosDto.toYoutubeVideo(): YoutubeVideo{
     return YoutubeVideo(
         key = key,
+        site = site,
         type = type
     )
 }

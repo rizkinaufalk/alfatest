@@ -29,8 +29,9 @@ class MovieRepositoryImpl @Inject constructor(
     // In this case i want to filter only youtube videos because the api provide any other type which not only youtube
     override suspend fun getVideos(movieId: Int): List<YoutubeVideo> {
         // filter the result from api with the desired type after that pass it to wrapper with map
+
         val item = api.getVideo(movieId).results.filter {
-            it.type == "Youtube"
+            it.site == "YouTube" && it.type == "Trailer"
         }.map {
             it.toYoutubeVideo()
         }
