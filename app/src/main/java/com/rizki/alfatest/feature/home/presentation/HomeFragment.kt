@@ -23,6 +23,7 @@ import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.mapper.Movies
+import com.rizki.alfatest.feature.dialogs.MovieDetailDialogFragment
 import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import com.rizki.alfatest.feature.home.adapter.MovieAdapter
 import com.rizki.alfatest.feature.review.presentation.ReviewFragment
@@ -30,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
+class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -40,10 +41,15 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
     var page = 1
     var genre = ""
     var isGenre = false
-    var youtubeKey : String? = null
+    var youtubeKey: String? = null
+    var isfav = false
 
-    private var binding: FragmentHomeBinding by autoCleaned {(FragmentHomeBinding.inflate(layoutInflater))}
-    private lateinit var movies: Movies
+    private var binding: FragmentHomeBinding by autoCleaned {
+        (FragmentHomeBinding.inflate(
+            layoutInflater
+        ))
+    }
+    private var movieId: Int = 0
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -124,7 +130,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
 
                 is Resource.Success -> {
                     val genreList = ArrayList<GenresDto>()
-                    genreList.add(GenresDto(0,"Genre"))
+                    genreList.add(GenresDto(0, "Genre"))
                     it.data?.map { genreList.add(it) }
                     showGenreList(genreList)
                 }
@@ -133,55 +139,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        viewModel.getFavByIdResult.observe(viewLifecycleOwner) {
-            when (it) {
-
-                is Resource.Success -> {
-                    showMovieDetail(
-                        movies.id,
-                        movies.poster_path,
-                        movies.original_title,
-                        movies.release_date,
-                        movies.overview,
-                        true,
-                        youtubeKey
-                    )
-                }
-
-                is Resource.Error -> {
-                    showMovieDetail(
-                        movies.id,
-                        movies.poster_path,
-                        movies.original_title,
-                        movies.release_date,
-                        movies.overview,
-                        false,
-                        youtubeKey
-                    )
-                }
-            }
-        }
-
-        viewModel.getVideoByMovieIdResult.observe(viewLifecycleOwner) {
-            when (it) {
-
-                is Resource.Loading -> {
-                    // TODO: Display progressBar
-                }
-
-                is Resource.Success -> {
-                    youtubeKey = it.data?.get(0)?.key
-                    viewModel.getFavById(movies.id)
-                }
-
-                is Resource.Error -> {
-                    viewModel.getFavById(movies.id)
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-
         }
     }
 
@@ -237,8 +194,8 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
     }
 
     private fun initAdapter() {
-        adapterMovie = MovieAdapter()
         layoutMovie = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+        adapterMovie = MovieAdapter(this)
 
         binding.rcvMovie.apply {
             adapter = adapterMovie
@@ -246,75 +203,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
 
         }
 
-        adapterMovie.setOnItemClickCallback(this)
-    }
-
-    private fun showMovieDetail(
-        movieId: Int,
-        posterPath: String,
-        title: String,
-        releaseDate: String,
-        overview: String,
-        isFav: Boolean,
-        youtubeKeys: String? = null
-    ) {
-        val dialog = BottomSheetDialog(this.requireContext())
-        dialog.setContentView(R.layout.dialog_bottom_sheet_detail)
-        var mutableIsfav = isFav
-
-        val ivPoster = dialog.findViewById<ImageView>(R.id.iv_poster)
-        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title)
-        val tvReleaseDate = dialog.findViewById<TextView>(R.id.tv_release_date)
-        val tvOverview = dialog.findViewById<TextView>(R.id.tv_overview)
-        val btnReview = dialog.findViewById<Button>(R.id.btn_review)
-        val ivFavourite = dialog.findViewById<ImageView>(R.id.iv_favourite)
-        val youtubeView = dialog.findViewById<YouTubePlayerView>(R.id.youtube_player)
-
-        if (youtubeView != null) {
-            lifecycle.addObserver(youtubeView)
-        }
-        youtubeView?.addYouTubePlayerListener(object: AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                youtubeKeys?.let { youTubePlayer.cueVideo(it, 0f) }
-            }
-        })
-
-        GlideApp.with(MovieApp.applicationContext()).load("${MovieApi.IMAGE_URL}${posterPath}")
-            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(ivPoster!!)
-
-        tvTitle?.text = title
-        tvReleaseDate?.text = GlobalFunc.dateConverter(releaseDate)
-        tvOverview?.text = overview
-
-        if (isFav) {
-            ivFavourite?.setImageResource(R.drawable.ic_favorite_solid_24)
-        } else {
-            ivFavourite?.setImageResource(R.drawable.ic_favorite_border_24)
-        }
-
-        ivFavourite?.setOnClickListener {
-            if (mutableIsfav) {
-                mutableIsfav = false
-                ivFavourite.setImageResource(R.drawable.ic_favorite_border_24)
-                viewModel.deleteFavourite(FavouriteEntity(movieId, title, overview, posterPath))
-            } else {
-                mutableIsfav = true
-                ivFavourite.setImageResource(R.drawable.ic_favorite_solid_24)
-                viewModel.addFavourite(FavouriteEntity(movieId, title, overview, posterPath))
-            }
-        }
-
-        btnReview?.setOnClickListener {
-            val myfragment = ReviewFragment.newInstance(movieId)
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
-            fragmentTransaction.replace(R.id.frm_container_main, myfragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
-
-            dialog.dismiss()
-        }
-
-        dialog.show()
+//        adapterMovie.setOnItemClickCallback(this)
     }
 
     private fun showGenreList(genres: ArrayList<GenresDto>) {
@@ -358,17 +247,10 @@ class HomeFragment : Fragment(), MovieAdapter.OnItemClickCallback {
 
     }
 
-    override fun onItemClicked(data: Movies) {
-        viewModel.getVideoByMovieId(data.id)
+    override fun onClickMovie(value: Movies) {
 
-        movies = Movies(
-            false,
-            data.id,
-            data.original_title,
-            data.overview,
-            data.poster_path,
-            data.release_date
-        )
+        val bottomSheetFragment = MovieDetailDialogFragment(value)
+        bottomSheetFragment.show(childFragmentManager, "")
     }
 
 }

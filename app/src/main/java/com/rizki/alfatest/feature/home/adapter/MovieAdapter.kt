@@ -11,9 +11,9 @@ import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.domain.mapper.Movies
 import com.rizki.alfatest.databinding.ItemMovieBinding
 
-class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
+class MovieAdapter(val onClickMovie: OnClickMovie) :
+    RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
 
-    private var onItemClickListener: OnItemClickCallback? = null
     private val item = ArrayList<Movies>()
 
     fun setList(movies: ArrayList<Movies>) {
@@ -26,7 +26,6 @@ class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
         notifyDataSetChanged()
     }
 
-
     inner class MovieViewholder(val bind: ItemMovieBinding) : RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Movies) {
             bind.apply {
@@ -38,11 +37,8 @@ class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
                 Log.d(TAG, "${MovieApi.IMAGE_URL}${data.poster_path}")
             }
 
-//            bind.ivMovie.setOnClickListener {
-//                onItemClickListener?.onItemClicked(data)
-//            }
-        }
 
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewholder {
@@ -51,22 +47,76 @@ class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
     }
 
     override fun onBindViewHolder(holder: MovieViewholder, position: Int) {
-        holder.bind(item[position])
+        val currentItem = item[position]
+        holder.bind(currentItem)
+
 
         holder.bind.ivMovie.setOnClickListener {
-            onItemClickListener?.onItemClicked(item[position])
-
-        }
+                onClickMovie.onClickMovie(currentItem)
+            }
     }
 
     override fun getItemCount(): Int = item.size
 
-    interface OnItemClickCallback {
-        fun onItemClicked(data: Movies)
-    }
-
-    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-        this.onItemClickListener = onItemClickCallback
-    }
+    interface OnClickMovie { fun onClickMovie(value: Movies) }
 
 }
+
+//class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewholder>() {
+//
+//    private var onItemClickListener: OnItemClickCallback? = null
+//    private val item = ArrayList<Movies>()
+//
+//    fun setList(movies: ArrayList<Movies>) {
+//        item.addAll(movies)
+//        notifyDataSetChanged()
+//    }
+//
+//    fun clearList() {
+//        item.clear()
+//        notifyDataSetChanged()
+//    }
+//
+//
+//    inner class MovieViewholder(val bind: ItemMovieBinding) : RecyclerView.ViewHolder(bind.root) {
+//        fun bind(data: Movies) {
+//            bind.apply {
+//                GlideApp.with(itemView)
+//                    .load("${MovieApi.IMAGE_URL}${data.poster_path}")
+//                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+//                    .into(ivMovie)
+//
+//                Log.d(TAG, "${MovieApi.IMAGE_URL}${data.poster_path}")
+//            }
+//
+////            bind.ivMovie.setOnClickListener {
+////                onItemClickListener?.onItemClicked(data)
+////            }
+//        }
+//
+//    }
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewholder {
+//        val view = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+//        return MovieViewholder(view)
+//    }
+//
+//    override fun onBindViewHolder(holder: MovieViewholder, position: Int) {
+//        holder.bind(item[position])
+//
+//        holder.bind.ivMovie.setOnClickListener {
+//            onItemClickListener?.onItemClicked(item[position])
+//        }
+//    }
+//
+//    override fun getItemCount(): Int = item.size
+//
+//    interface OnItemClickCallback {
+//        fun onItemClicked(data: Movies)
+//    }
+//
+//    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+//        this.onItemClickListener = onItemClickCallback
+//    }
+//
+//}

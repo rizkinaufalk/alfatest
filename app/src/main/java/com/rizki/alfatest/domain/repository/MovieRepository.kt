@@ -15,5 +15,5 @@ interface MovieRepository {
 
     suspend fun getReviews(movieId: Int): List<ReviewsDto>
 
-    suspend fun getVideos(movieId: Int): List<YoutubeVideo>
+    suspend fun getVideos(movieId: Int): YoutubeVideo
 }
