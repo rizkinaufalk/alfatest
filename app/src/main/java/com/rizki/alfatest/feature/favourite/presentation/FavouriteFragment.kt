@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.rizki.alfatest.R
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.databinding.FragmentFavouriteBinding

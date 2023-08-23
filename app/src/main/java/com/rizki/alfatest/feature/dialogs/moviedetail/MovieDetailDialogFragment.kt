@@ -1,4 +1,4 @@
-package com.rizki.alfatest.feature.dialogs
+package com.rizki.alfatest.feature.dialogs.moviedetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.rizki.alfatest.MovieApp
 import com.rizki.alfatest.R
+import com.rizki.alfatest.common.Args
 import com.rizki.alfatest.common.GlideApp
 import com.rizki.alfatest.common.GlobalFunc
 import com.rizki.alfatest.common.Resource
@@ -20,7 +23,6 @@ import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.databinding.DialogMovieDetailBinding
 import com.rizki.alfatest.domain.mapper.Movies
-import com.rizki.alfatest.feature.home.presentation.HomeViewModel
 import com.rizki.alfatest.feature.review.presentation.ReviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -131,11 +133,11 @@ class MovieDetailDialogFragment(
         }
 
         binding.btnReview.setOnClickListener {
-            val myfragment = ReviewFragment.newInstance(value.id)
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
-            fragmentTransaction.replace(R.id.frm_container_main, myfragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
+            val bundle = Bundle().apply {
+                putInt(Args.PARAM_ONE, value.id)
+            }
+
+            findNavController().navigate(R.id.review_fragment, bundle)
 
             dialog?.dismiss()
         }

@@ -7,26 +7,20 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.Target
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import com.rizki.alfatest.MovieApp
 import com.rizki.alfatest.R
 import com.rizki.alfatest.common.*
-import com.rizki.alfatest.data.local.entity.FavouriteEntity
-import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.mapper.Movies
-import com.rizki.alfatest.feature.dialogs.MovieDetailDialogFragment
+import com.rizki.alfatest.feature.dialogs.LoadingDialog
+import com.rizki.alfatest.feature.dialogs.moviedetail.MovieDetailDialogFragment
 import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import com.rizki.alfatest.feature.home.adapter.MovieAdapter
-import com.rizki.alfatest.feature.review.presentation.ReviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -41,8 +35,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
     var page = 1
     var genre = ""
     var isGenre = false
-    var youtubeKey: String? = null
-    var isfav = false
+
 
     private var binding: FragmentHomeBinding by autoCleaned {
         (FragmentHomeBinding.inflate(
@@ -50,11 +43,11 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
         ))
     }
     private var movieId: Int = 0
-
     private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var adapterMovie: MovieAdapter
     private lateinit var layoutMovie: GridLayoutManager
+    private lateinit var loadingDialog: LoadingDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -77,10 +70,11 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
             when (it) {
 
                 is Resource.Loading -> {
-                    // TODO: Display progressBar
+                    loadingDialog.show()
                 }
 
                 is Resource.Success -> {
+                    loadingDialog.dismiss()
                     val movieList = ArrayList<Movies>()
 
                     it.data?.results?.map { item -> movieList.add(item.toResult()) }
@@ -91,6 +85,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                 }
 
                 is Resource.Error -> {
+                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -101,10 +96,11 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
             when (it) {
 
                 is Resource.Loading -> {
-                    // TODO: Display progressBar
+                    loadingDialog.show()
                 }
 
                 is Resource.Success -> {
+                    loadingDialog.dismiss()
                     val movieList = ArrayList<Movies>()
 
                     it.data?.results?.map { item -> movieList.add(item.toResult()) }
@@ -115,6 +111,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                 }
 
                 is Resource.Error -> {
+                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -125,10 +122,11 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
             when (it) {
 
                 is Resource.Loading -> {
-                    // TODO: Display progressBar
+                    loadingDialog.show()
                 }
 
                 is Resource.Success -> {
+                    loadingDialog.dismiss()
                     val genreList = ArrayList<GenresDto>()
                     genreList.add(GenresDto(0, "Genre"))
                     it.data?.map { genreList.add(it) }
@@ -136,6 +134,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                 }
 
                 is Resource.Error -> {
+                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -150,6 +149,7 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
 
     private fun initComponent() {
         isGenre = false
+        loadingDialog = LoadingDialog(requireContext())
 
         binding.apply {
 
@@ -181,12 +181,8 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
             })
 
             ivFavourite.setOnClickListener {
+                findNavController().navigate(R.id.favourite)
 
-                val myfragment = FavouriteFragment()
-                val fragmentTransaction = fragmentManager!!.beginTransaction()
-                fragmentTransaction.replace(R.id.frm_container_main, myfragment)
-                fragmentTransaction.addToBackStack(null)
-                fragmentTransaction.commit()
             }
 
         }

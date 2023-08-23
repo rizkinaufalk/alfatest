@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rizki.alfatest.common.Args
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.feature.review.adapter.ReviewAdapter
@@ -81,7 +82,7 @@ class ReviewFragment() : Fragment() {
     }
 
     private fun initData() {
-        viewModel.getReview(movieId)
+        arguments?.let { viewModel.getReview(it.getInt(Args.PARAM_ONE)) }
     }
 
     private fun initComponent() {

@@ -3,6 +3,9 @@ package com.rizki.alfatest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.rizki.alfatest.feature.home.presentation.HomeFragment
 import com.rizki.alfatest.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,14 +21,6 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        initComponent()
-    }
-
-    fun initComponent() {
-
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.frm_container_main, HomeFragment()).commit()
-
-
+       /** You don't have to navigate to first fragment since it already defined in navgraph as your first destination**/
     }
 }

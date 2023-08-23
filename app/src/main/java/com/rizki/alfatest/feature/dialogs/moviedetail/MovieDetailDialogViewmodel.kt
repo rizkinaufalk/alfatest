@@ -1,4 +1,4 @@
-package com.rizki.alfatest.feature.dialogs
+package com.rizki.alfatest.feature.dialogs.moviedetail
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +8,7 @@ import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.domain.mapper.YoutubeVideo
 import com.rizki.alfatest.domain.usecase.favourite.AddFavouriteUseCase
 import com.rizki.alfatest.domain.usecase.favourite.DeleteFavUseCase
+import com.rizki.alfatest.domain.usecase.favourite.FavouriteUseCase
 import com.rizki.alfatest.domain.usecase.favourite.GetFavByIdUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_video.GetVideoByMovieIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,10 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailDialogViewmodel  @Inject constructor(
-    private val getFavByIdUseCase: GetFavByIdUseCase,
+    private val favouriteUseCase: FavouriteUseCase,
     private val getVideoByMovieIdUseCase: GetVideoByMovieIdUseCase,
-    private val addFavouriteUseCase: AddFavouriteUseCase,
-    private val deleteFavUseCase: DeleteFavUseCase
 )  : ViewModel() {
 
 
@@ -30,19 +29,19 @@ class MovieDetailDialogViewmodel  @Inject constructor(
 
     fun addFavourite(favouriteEntity: FavouriteEntity){
         viewModelScope.launch {
-            addFavouriteUseCase(favouriteEntity)
+            favouriteUseCase.addFavourite(favouriteEntity)
         }
     }
 
     fun deleteFavourite(favouriteEntity: FavouriteEntity){
         viewModelScope.launch {
-            deleteFavUseCase(favouriteEntity)
+            favouriteUseCase.deleteFavourite(favouriteEntity)
         }
     }
 
     fun getFavById(movieId: Int){
         viewModelScope.launch {
-            getFavByIdResult.postValue(getFavByIdUseCase(movieId) )
+            getFavByIdResult.postValue(favouriteUseCase.getFavouritebyId(movieId) )
         }
     }
 
