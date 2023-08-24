@@ -2,7 +2,6 @@ package com.rizki.alfatest.feature.base
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.Spanned
@@ -12,18 +11,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessage
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessageImpl
+import com.rizki.alfatest.ext.delegate.eventchange.EventChange
+import com.rizki.alfatest.ext.delegate.eventchange.EventChangeImpl
 import timber.log.Timber
 
 abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
-    : Fragment()
-{
+    : Fragment(),
+    EventChange by EventChangeImpl(),
+    DisplayMessage by DisplayMessageImpl() {
 
     abstract val viewModel: VM
     abstract val binding: VB
@@ -42,18 +44,8 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         setupFMListener()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.showToast.observe(this) { Toast.makeText(activity, it, Toast.LENGTH_LONG).show() }
-//        viewModel.showSnack.observe(this) { showSnackBar(it.message, it.spanned, it.color) }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        hideKeyboard()
-        hideLoading()
+        registerLifecycleOwner(this, this)
     }
 
     override fun onCreateView(
@@ -64,7 +56,7 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
         return binding.root
     }
 
-    private fun performDataBinding(){
+    private fun performDataBinding() {
         binding.setVariable(bindingVariable, viewModel)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
@@ -85,27 +77,26 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
         initOnClick()
     }
 
-    protected open fun setupComponent(){}
-    protected open fun setupArguments(){}
-    protected open fun setupAdapter(){}
-    protected open fun setupViewPager(){}
+    protected open fun setupComponent() {}
+    protected open fun setupArguments() {}
+    protected open fun setupAdapter() {}
+    protected open fun setupViewPager() {}
 
-    protected open fun setupListener(){}
-    protected open fun setupObserver(){}
+    protected open fun setupListener() {}
+    protected open fun setupObserver() {}
 
-    protected open fun initAPI(){}
-    protected open fun initOnClick(){}
+    protected open fun initAPI() {}
+    protected open fun initOnClick() {}
 
 
-    protected open fun setupFMListener(){}
+    protected open fun setupFMListener() {}
 
-    /** Loading */
-    fun showLoading() {
-//        this.progressDialogHelper.show(requireContext(), "")
+    protected open fun showLoading(){
+        showLoading(requireContext())
     }
 
-    fun hideLoading() {
-//        progressDialogHelper.dismiss()
+    protected open fun hiedLoading(){
+        hideLoading()
     }
 
     /** SnackBar */
@@ -115,22 +106,6 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
 //        spanned?.let { snackbar = Snackbar.make(requireContext(), this.requireView(), it, Snackbar.LENGTH_SHORT) }
 //        color?.let { snackbar.view.setBackgroundColor(Color.parseColor(it)) }
 //        snackbar.show()
-    }
-
-    /** Check Permission */
-    fun hasPermission(
-        context: Fragment, permissions: Array<String>,
-        resLauncher: ActivityResultLauncher<Array<String>>
-    ): Boolean {
-        var allPermitted = false
-        for (permission in permissions) {
-            allPermitted = (ContextCompat.checkSelfPermission(context.requireContext(), permission)
-                    == PackageManager.PERMISSION_GRANTED)
-            if (!allPermitted) break
-        }
-        if (allPermitted) return true
-        resLauncher.launch(permissions)
-        return false
     }
 
     /** Navigate */
@@ -149,24 +124,14 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
 //        return userAppScope.contains(Scope.APP_ITEM_BANK.value)
 //    }
 
-    /** Keyboard */
-    fun hideKeyboard() {
-        try {
-            val view = requireActivity().currentFocus
-            if (view != null) {
-                val imm = (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)
-                imm!!.hideSoftInputFromWindow(view.windowToken, 0)
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
     interface OnKeyboardVisibilityListener {
         fun onVisibilityChanged(visible: Boolean)
     }
 
-    fun setKeyboardVisibilityListener(onKeyboardVisibilityListener: OnKeyboardVisibilityListener, view: View) {
+    fun setKeyboardVisibilityListener(
+        onKeyboardVisibilityListener: OnKeyboardVisibilityListener,
+        view: View
+    ) {
         val parentView = (view as ViewGroup)
         parentView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {

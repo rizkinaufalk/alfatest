@@ -14,6 +14,8 @@ import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.mapper.Movies
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessage
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessageImpl
 import com.rizki.alfatest.feature.base.BaseFragment
 import com.rizki.alfatest.feature.dialogs.LoadingDialog
 import com.rizki.alfatest.feature.dialogs.SpinnerHelper
@@ -23,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAdapter.OnClickMovie {
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAdapter.OnClickMovie{
 
     lateinit var token: String
     var page = 1
@@ -37,7 +39,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAd
 
     private lateinit var adapterMovie: MovieAdapter
     private lateinit var layoutMovie: GridLayoutManager
-    private lateinit var loadingDialog: LoadingDialog
 
 
     override fun setupObserver() {
@@ -46,20 +47,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAd
             when (it) {
 
                 is Resource.Loading -> {
-                    loadingDialog.show()
+                    showLoading()
                 }
 
                 is Resource.Success -> {
-                    loadingDialog.dismiss()
+                    
                     val movieList = ArrayList<Movies>()
 
                     it.data?.results?.map { item -> movieList.add(item.toResult()) }
 
                     adapterMovie.setList(movieList)
+
+                    hideLoading()
                 }
 
                 is Resource.Error -> {
-                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -69,22 +71,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAd
             when (it) {
 
                 is Resource.Loading -> {
-                    loadingDialog.show()
+                    showLoading()
                 }
 
                 is Resource.Success -> {
-                    loadingDialog.dismiss()
+                    
                     val movieList = ArrayList<Movies>()
 
                     it.data?.results?.map { item -> movieList.add(item.toResult()) }
 
                     adapterMovie.setList(movieList)
 
+                    hideLoading()
+
 
                 }
 
                 is Resource.Error -> {
-                    loadingDialog.dismiss()
+                    
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -94,19 +98,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAd
             when (it) {
 
                 is Resource.Loading -> {
-                    loadingDialog.show()
+                    showLoading()
                 }
 
                 is Resource.Success -> {
-                    loadingDialog.dismiss()
+                    
                     val genreList = ArrayList<GenresDto>()
                     genreList.add(GenresDto(0, "Genre"))
                     it.data?.map { genreList.add(it) }
                     showGenreList(genreList)
+
+                    hideLoading()
                 }
 
                 is Resource.Error -> {
-                    loadingDialog.dismiss()
+                    
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -123,7 +129,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAd
     override fun setupComponent() {
         super.setupComponent()
         isGenre = false
-        loadingDialog = LoadingDialog(requireContext())
 
         binding.apply {
 
