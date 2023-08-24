@@ -36,7 +36,6 @@ class MovieDetailDialogFragment(
     private val viewModel: MovieDetailDialogViewmodel by viewModels()
 
     private var isFav = false
-    private var youtubeKey: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

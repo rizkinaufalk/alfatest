@@ -9,50 +9,30 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rizki.alfatest.BR
 import com.rizki.alfatest.common.Args
 import com.rizki.alfatest.common.Resource
+import com.rizki.alfatest.common.autoCleaned
+import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.feature.review.adapter.ReviewAdapter
 import com.rizki.alfatest.databinding.FragmentReviewBinding
+import com.rizki.alfatest.feature.base.BaseFragment
+import com.rizki.alfatest.feature.home.presentation.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ReviewFragment() : Fragment() {
+class ReviewFragment() : BaseFragment<FragmentReviewBinding, ReviewViewModel>() {
 
-    private var movieId: Int = 0
-    companion object {
-        fun newInstance(movieid: Int): ReviewFragment {
-            val reviewFragment: ReviewFragment = ReviewFragment()
-            reviewFragment.movieId = movieid
-            return reviewFragment
-        }
-    }
+    override val bindingVariable: Int = BR.vmReview
+    override val binding: FragmentReviewBinding by autoCleaned { (FragmentReviewBinding.inflate(layoutInflater)) }
+    override val viewModel: ReviewViewModel by viewModels()
 
-    private val viewModel: ReviewViewModel by viewModels()
     private lateinit var adapterReview: ReviewAdapter
     private lateinit var layoutMovie: LinearLayoutManager
 
-    private lateinit var binding: FragmentReviewBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentReviewBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        initComponent()
-        initData()
-        observeData()
-
-    }
-
-    private fun observeData() {
-
+    override fun setupObserver() {
+        super.setupObserver()
         viewModel.getReviewResult.observe(viewLifecycleOwner){
             when (it) {
 
@@ -69,8 +49,6 @@ class ReviewFragment() : Fragment() {
                     if (reviewList.size == 0){
                         binding.tvNoData.visibility = 1
                     }
-
-
                 }
 
                 is Resource.Error -> {
@@ -81,11 +59,13 @@ class ReviewFragment() : Fragment() {
 
     }
 
-    private fun initData() {
+    override fun initAPI() {
+        super.initAPI()
         arguments?.let { viewModel.getReview(it.getInt(Args.PARAM_ONE)) }
     }
 
-    private fun initComponent() {
+    override fun setupComponent() {
+        super.setupComponent()
         initRecyclerView()
     }
 

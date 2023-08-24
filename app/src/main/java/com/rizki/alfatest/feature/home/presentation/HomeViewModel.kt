@@ -15,6 +15,7 @@ import com.rizki.alfatest.domain.usecase.movie.get_genre.GetGenreUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_genre.GetMovieByGenreUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_popular.GetPopularUseCase
 import com.rizki.alfatest.domain.usecase.movie.get_video.GetVideoByMovieIdUseCase
+import com.rizki.alfatest.feature.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class HomeViewModel @Inject constructor(
     private val getMovieUseCase: GetPopularUseCase,
     private val getGenreUseCase: GetGenreUseCase,
     private val getMovieByGenreUseCase: GetMovieByGenreUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
 
     val getMovieResult = MutableLiveData<Resource<Movie>>()
     val getGenreResult = MutableLiveData<Resource<List<GenresDto>>>()

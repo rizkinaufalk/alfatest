@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".feature.home.presentation.HomeFragment">
 
+    <data>
+        <variable
+            name="vmHome"
+            type="com.rizki.alfatest.feature.home.presentation.HomeViewModel" />
+    </data>
+
     <RelativeLayout
         android:id="@+id/ly_home"
         android:layout_width="match_parent"
@@ -19,7 +25,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="Popular"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="20sp" />
 

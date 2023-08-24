@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.rizki.alfatest.common.Resource
 import com.rizki.alfatest.domain.mapper.Reviews
 import com.rizki.alfatest.domain.usecase.movie.get_review.GetMovieReviewUseCaSe
+import com.rizki.alfatest.feature.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReviewViewModel @Inject constructor(
     private val getMovieReviewUseCaSe: GetMovieReviewUseCaSe
-) : ViewModel() {
+) : BaseViewModel() {
 
     val getReviewResult = MutableLiveData<Resource<List<Reviews>>>()
 

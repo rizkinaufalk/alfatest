@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".feature.favourite.presentation.FavouriteFragment">
 
+    <data>
+        <variable
+            name="vmFavourite"
+            type="com.rizki.alfatest.feature.favourite.presentation.FavouriteViewModel" />
+    </data>
+
     <RelativeLayout
         android:id="@+id/ly_review"
         android:layout_width="match_parent"

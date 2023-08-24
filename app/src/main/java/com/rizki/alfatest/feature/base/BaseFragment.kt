@@ -23,7 +23,6 @@ import timber.log.Timber
 
 abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel>
     : Fragment()
-//    , MiddleActivity.OnBackPressedListener
 {
 
     abstract val viewModel: VM

@@ -11,44 +11,30 @@ import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.rizki.alfatest.BR
 import com.rizki.alfatest.R
 import com.rizki.alfatest.common.Resource
+import com.rizki.alfatest.common.autoCleaned
 import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.databinding.FragmentFavouriteBinding
+import com.rizki.alfatest.databinding.FragmentReviewBinding
+import com.rizki.alfatest.feature.base.BaseFragment
 import com.rizki.alfatest.feature.favourite.adapter.FavouriteAdapter
+import com.rizki.alfatest.feature.review.presentation.ReviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavouriteFragment : Fragment() {
+class FavouriteFragment : BaseFragment<FragmentFavouriteBinding, FavouriteViewModel>() {
 
-    companion object {
-        fun newInstance() = FavouriteFragment()
-    }
-
-    private lateinit var binding: FragmentFavouriteBinding
-
-    private val viewModel: FavouriteViewModel by viewModels()
+    override val bindingVariable: Int = BR.vmFavourite
+    override val binding: FragmentFavouriteBinding by autoCleaned { (FragmentFavouriteBinding.inflate(layoutInflater)) }
+    override val viewModel: FavouriteViewModel by viewModels()
 
     private lateinit var adapterFavourite: FavouriteAdapter
     private lateinit var layoutFavourite: GridLayoutManager
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFavouriteBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        initComponent()
-        initData()
-        observeData()
-    }
-
-    private fun observeData() {
+    override fun setupObserver() {
+        super.setupObserver()
         viewModel.getFavouriteResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -68,15 +54,18 @@ class FavouriteFragment : Fragment() {
         }
     }
 
-    private fun initData() {
+    override fun initAPI() {
+        super.initAPI()
         viewModel.getFavourite()
     }
 
-    private fun initComponent() {
-        initAdapter()
+    override fun setupComponent() {
+        super.setupComponent()
+        setupAdapter()
     }
 
-    private fun initAdapter() {
+    override fun setupAdapter() {
+        super.setupAdapter()
         adapterFavourite = FavouriteAdapter()
         layoutFavourite = GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false)
 

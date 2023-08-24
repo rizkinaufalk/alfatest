@@ -1,35 +1,29 @@
 package com.rizki.alfatest.feature.home.presentation
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rizki.alfatest.BR
 import com.rizki.alfatest.R
-import com.rizki.alfatest.common.*
+import com.rizki.alfatest.common.Constants
+import com.rizki.alfatest.common.Resource
+import com.rizki.alfatest.common.autoCleaned
 import com.rizki.alfatest.data.remote.dto.GenresDto
 import com.rizki.alfatest.data.remote.dto.toResult
 import com.rizki.alfatest.databinding.FragmentHomeBinding
 import com.rizki.alfatest.domain.mapper.Movies
+import com.rizki.alfatest.feature.base.BaseFragment
 import com.rizki.alfatest.feature.dialogs.LoadingDialog
+import com.rizki.alfatest.feature.dialogs.SpinnerHelper
 import com.rizki.alfatest.feature.dialogs.moviedetail.MovieDetailDialogFragment
-import com.rizki.alfatest.feature.favourite.presentation.FavouriteFragment
 import com.rizki.alfatest.feature.home.adapter.MovieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
-
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(), MovieAdapter.OnClickMovie {
 
     lateinit var token: String
     var page = 1
@@ -37,35 +31,17 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
     var isGenre = false
 
 
-    private var binding: FragmentHomeBinding by autoCleaned {
-        (FragmentHomeBinding.inflate(
-            layoutInflater
-        ))
-    }
-    private var movieId: Int = 0
-    private val viewModel: HomeViewModel by viewModels()
+    override val bindingVariable: Int = BR.vmHome
+    override val binding: FragmentHomeBinding by autoCleaned { (FragmentHomeBinding.inflate(layoutInflater)) }
+    override val viewModel: HomeViewModel by viewModels()
 
     private lateinit var adapterMovie: MovieAdapter
     private lateinit var layoutMovie: GridLayoutManager
     private lateinit var loadingDialog: LoadingDialog
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        initComponent()
-        initData()
-        observeData()
-        initAdapter()
-    }
-
-    private fun observeData() {
+    override fun setupObserver() {
+        super.setupObserver()
         viewModel.getMovieResult.observe(viewLifecycleOwner) {
             when (it) {
 
@@ -80,8 +56,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                     it.data?.results?.map { item -> movieList.add(item.toResult()) }
 
                     adapterMovie.setList(movieList)
-
-
                 }
 
                 is Resource.Error -> {
@@ -89,7 +63,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
 
         viewModel.getMovieByGenreResult.observe(viewLifecycleOwner) {
@@ -115,7 +88,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
 
         viewModel.getGenreResult.observe(viewLifecycleOwner) {
@@ -141,13 +113,15 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
         }
     }
 
-    private fun initData() {
+    override fun initAPI() {
+        super.initAPI()
         token = Constants.TOKEN
         viewModel.getMovie(page.toString())
         viewModel.getGenre()
     }
 
-    private fun initComponent() {
+    override fun setupComponent() {
+        super.setupComponent()
         isGenre = false
         loadingDialog = LoadingDialog(requireContext())
 
@@ -172,7 +146,6 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                             }
                             page++
                         }
-//                    showLoading(3, true)
                     }
 
                     super.onScrolled(recyclerView, dx, dy)
@@ -184,63 +157,42 @@ class HomeFragment : Fragment(), MovieAdapter.OnClickMovie {
                 findNavController().navigate(R.id.favourite)
 
             }
-
         }
-
     }
 
-    private fun initAdapter() {
+    override fun setupAdapter() {
+        super.setupAdapter()
         layoutMovie = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         adapterMovie = MovieAdapter(this)
 
         binding.rcvMovie.apply {
             adapter = adapterMovie
             layoutManager = layoutMovie
-
         }
-
-//        adapterMovie.setOnItemClickCallback(this)
     }
 
     private fun showGenreList(genres: ArrayList<GenresDto>) {
-        val genreSpinner: Spinner = binding.spGenre
-        genreSpinner.onItemSelectedListener
-        val spMovieAdapter =
-            ArrayAdapter(requireContext(), R.layout.item_spinner, genres.map { it.name })
-        spMovieAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val spinnerSetup = SpinnerHelper(requireContext(), binding.spGenre)
+        spinnerSetup.setupSpinner(R.layout.item_spinner, genres.map { it.name })
+        {itemSelected, indexSelected ->
 
-        binding.spGenre.adapter = spMovieAdapter
+            val genreId = genres[indexSelected].id
 
-        genreSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            if (genreId != 0) {
+                page = 1
+                isGenre = true
+                binding.tvSection.text = "Genre"
+                genre = genreId.toString()
+                adapterMovie.clearList()
 
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View?, position: Int, id: Long
-            ) {
-                val idGenre = genres[position].id
-
-                if (idGenre != 0) {
-                    page = 1
-                    isGenre = true
-                    binding.tvSection.text = "Genre"
-                    genre = idGenre.toString()
-                    adapterMovie.clearList()
-
-                    viewModel.getMovieByGenre(genre, page)
-                } else {
-                    binding.tvSection.text = "Popular"
-                    page = 1
-                    viewModel.getMovie(page.toString())
-                    adapterMovie.clearList()
-                }
-
+                viewModel.getMovieByGenre(genre, page)
+            } else {
+                binding.tvSection.text = "Popular"
+                page = 1
+                viewModel.getMovie(page.toString())
+                adapterMovie.clearList()
             }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
         }
-
     }
 
     override fun onClickMovie(value: Movies) {

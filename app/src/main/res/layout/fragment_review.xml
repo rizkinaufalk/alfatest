@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".feature.home.presentation.HomeFragment">
+
+    <data>
+        <variable
+            name="vmReview"
+            type="com.rizki.alfatest.feature.review.presentation.ReviewViewModel" />
+    </data>
 
     <RelativeLayout
         android:id="@+id/ly_review"
@@ -16,17 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            tools:listitem="@layout/item_review"/>
+            tools:listitem="@layout/item_review" />
 
         <TextView
             android:id="@+id/tv_no_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone"
             android:text="No Review Yet"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

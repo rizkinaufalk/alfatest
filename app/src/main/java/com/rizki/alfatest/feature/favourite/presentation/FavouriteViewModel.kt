@@ -8,6 +8,7 @@ import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.domain.usecase.favourite.DeleteFavUseCase
 import com.rizki.alfatest.domain.usecase.favourite.FavouriteUseCase
 import com.rizki.alfatest.domain.usecase.favourite.GetFavouriteUseCase
+import com.rizki.alfatest.feature.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouriteViewModel @Inject constructor(
     private val favouriteUseCase: FavouriteUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     val getFavouriteResult = MutableLiveData<Resource<List<FavouriteEntity>>>()
 
