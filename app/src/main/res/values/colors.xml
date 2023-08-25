@@ -10,4 +10,5 @@
     <color name="softGrey">#B2B2B2</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#9F1818</color>
+    <color name="transparent_grey">#3A3A3A</color>
 </resources>

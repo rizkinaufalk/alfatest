@@ -23,13 +23,16 @@ import com.rizki.alfatest.data.local.entity.FavouriteEntity
 import com.rizki.alfatest.data.remote.MovieApi
 import com.rizki.alfatest.databinding.DialogMovieDetailBinding
 import com.rizki.alfatest.domain.mapper.Movies
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessage
+import com.rizki.alfatest.ext.delegate.displaymessage.DisplayMessageImpl
 import com.rizki.alfatest.feature.review.presentation.ReviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieDetailDialogFragment(
     private val value: Movies
-) : BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment(),
+    DisplayMessage by DisplayMessageImpl() {
 
     private lateinit var binding: DialogMovieDetailBinding
 
@@ -123,10 +126,12 @@ class MovieDetailDialogFragment(
             if (isFav) {
                 isFav = false
                 binding.ivFavourite.setImageResource(R.drawable.ic_favorite_border_24)
+                showToastCenter(requireContext(), "Removed From Favourite", R.drawable.ic_favorite_border_24)
                 viewModel.deleteFavourite(FavouriteEntity(value.id, value.original_title, value.overview, value.poster_path))
             } else {
                 isFav = true
                 binding.ivFavourite.setImageResource(R.drawable.ic_favorite_solid_24)
+                showToastCenter(requireContext(), "Add To Favourite", R.drawable.ic_favorite_solid_24)
                 viewModel.addFavourite(FavouriteEntity(value.id, value.original_title, value.overview, value.poster_path))
             }
         }

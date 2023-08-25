@@ -21,7 +21,7 @@
             android:layout_marginTop="8dp"
             android:text="Loading..."
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 </layout>

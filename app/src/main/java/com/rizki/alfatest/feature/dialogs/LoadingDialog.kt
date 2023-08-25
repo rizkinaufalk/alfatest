@@ -14,22 +14,6 @@ import com.rizki.alfatest.databinding.DialogLoadingBinding
 class LoadingDialog() {
     private var dialog: Dialog? = null
 
-//    private val dialog = Dialog(context).apply {
-//        requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        var binding = DataBindingUtil.inflate<DialogLoadingBinding>(
-//            LayoutInflater.from(context),
-//            R.layout.dialog_loading,
-//            null,
-//            false
-//        )
-//        setContentView(binding.root)
-//        setCancelable(false)
-//        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//
-//        binding.loadingText.text = "Loading..."
-//    }
-
     fun show(context: Context) {
         if (dialog != null) {
             dismiss()
