@@ -1,0 +1,19 @@
+package com.skollaedutech.skolla.ext.constant
+
+object Args {
+
+    // PARAM ACTIVITY
+    const val EXTRA_PARAM_STR_ONE = "PARAM_STR_ONE_OPEN_LAYOUT"
+    const val EXTRA_PARAM_STR_TWO = "PARAM_STR_TWO_OPEN_LAYOUT"
+    const val EXTRA_PARAM_INT_ONE = "PARAM_INT_ONE_OPEN_LAYOUT"
+    const val EXTRA_PARAM_INT_TWO = "PARAM_INT_TWO_OPEN_LAYOUT"
+
+    // AUTH
+    const val EXTRA_AUTHENTICATION = "EXTRA_AUTH"
+    const val EXTRA_NOTIFICATION_ID = "NOTIFICATION_ID"
+    const val EXTRA_VALUE_CREDENTIAL_FORBIDDEN = "CREDENTIAL_FORBIDDEN"
+
+    // DIALOG
+    const val EXTRA_UI_DIALOG_MODEL = "UI_DIALOG_MODEL"
+
+}

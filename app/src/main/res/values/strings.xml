@@ -2,4 +2,43 @@
     <string name="app_name">alfatest</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Network Error-->
+    <string name="error_network_title">Whoops!</string>
+    <string name="error_network_description">Tidak ada koneksi. Pastikan Wifi dan Data anda menyala</string>
+    <string name="error_network_interupted_title">Koneksi Terputus!</string>
+    <string name="error_network_interupted_description">Koneksi terputus. Cek kembali koneksi kamu</string>
+    <string name="error_network_null_description">Respon Kosong. Cek kembali koneksi kamu</string>
+    <string name="error_network_facebook">Error. Silakan lakukan setting akses email pada facebook-mu untuk masuk ke dalam aplikasi ini</string>
+    <string name="error_network_409">Kamu telah login di perangkat lain.</string>
+    <string name="error_network_404_title">Not Found!</string>
+    <string name="error_network_404">Layanan tidak tersedia.\nSilakan coba kembali</string>
+    <string name="error_network_500_title">Internal Server Error!</string>
+    <string name="error_network_500">Sistem sedang ada masalah. Silakan coba beberapa saat lagi</string>
+    <string name="error_exercise_not_found_title">Mohon Maaf...</string>
+    <string name="error_exercise_not_found_description">Saat ini soal belum tersedia pada Bank Soal, silahkan pilih Bab atau Sub Bab yang lain</string>
+    <string name="error_general_title">Ada error nih...</string>
+    <string name="error_general_description">Sedang ada error pada aplikasi ini. Jangan khawatir, kami sedang berusaha memperbaiki masalahnya!</string>
+    <string name="error_forbidden_title">Tidak Berlangganan Premium</string>
+    <string name="error_forbidden_description">Saat ini akun kamu sedang tidak berlangganan premium di Skolla. Silakan hubungi admin untuk berlangganan premium.</string>
+    <string name="error_forbidden_button">Premium Skolla</string>
+    <string name="error_forbidden_info_title">Silakan masuk kembali</string>
+    <string name="error_forbidden_info_description">Akun Skolla-mu dikeluarkan secara otomatis karena sesi kamu habis. Silakan lakukan login kembali.</string>
+    <string name="error_forbidden_info_button">OKE</string>
+    <string name="error_corrupt_file_title">File bermasalah..</string>
+    <string name="error_corrupt_file_description">File tidak dapet dibuka. Silahkan download ulang</string>
+    <string name="error_corrupt_file_button">OKE</string>
+    <string name="error_connection_time_out">Failed to connect to server please check you network!</string>
+
+    <string name="error_network_button">Tutup</string>
+    <string name="error_network_interupted_button">Coba Lagi</string>
+    <string name="error_google_title">Terjadi kesalahan saat menyambung ke Google</string>
+    <string name="error_google_description">Terjadi kesalahan pada saat menyambung ke Google. Kode Error: %1$d</string>
+    <string name="error_google_button">OKE</string>
+
+    <string name="error_consul_try_to_cancel_consultation_finished_by_teacher">Konsultasi telah dibatalkan karena telah melewati waktu konfirmasi</string>
+    <string name="error_consul_try_to_extend_consultation_timeout">Konsultasi telah diakhiri karena telah melewati waktu konfirmasi</string>
+    <string name="error_consul_try_to_cancel_other_consultation">Konsultasi ini bukan milik Anda</string>
+    <string name="error_consul_try_to_start_consul_when_consultation_not_finished">Konsultasi sebelumnya masih berlangsung</string>
+    <string name="error_consul_try_to_get_remainingtime_finished_consultation">Konsultasi sudah berakhir</string>
 </resources>

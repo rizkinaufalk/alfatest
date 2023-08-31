@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".feature.favourite.presentation.FavouriteFragment">
+    tools:context=".app.feature.favourite.presentation.FavouriteFragment">
 
     <data>
         <variable
             name="vmFavourite"
-            type="com.rizki.alfatest.feature.favourite.presentation.FavouriteViewModel" />
+            type="com.rizki.alfatest.app.feature.favourite.presentation.FavouriteViewModel" />
     </data>
 
     <RelativeLayout

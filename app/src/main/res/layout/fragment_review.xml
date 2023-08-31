@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".feature.home.presentation.HomeFragment">
+    tools:context=".app.feature.home.presentation.HomeFragment">
 
     <data>
         <variable
             name="vmReview"
-            type="com.rizki.alfatest.feature.review.presentation.ReviewViewModel" />
+            type="com.rizki.alfatest.app.feature.review.presentation.ReviewViewModel" />
     </data>
 
     <RelativeLayout
